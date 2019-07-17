@@ -14,6 +14,8 @@ namespace Microsoft.Spark.Worker
             var sparkVersion = new Version(
                 Environment.GetEnvironmentVariable("DOTNET_WORKER_SPARK_VERSION"));
 
+            var reuseWorker = "1".Equals(Environment.GetEnvironmentVariable("SPARK_REUSE_WORKER"));
+
             // Note that for the daemon server, standard output is used to communicate
             // port number. Thus, use error output until the communication is complete.
             Console.Error.WriteLine(
@@ -29,7 +31,7 @@ namespace Microsoft.Spark.Worker
 
             if ((args[0] == "-m") && (args[1] == "pyspark.worker"))
             {
-                new SimpleWorker(sparkVersion).Run();
+                new SimpleWorker(sparkVersion, reuseWorker).Run();
             }
             else if ((args[0] == "-m") && args[1] == ("pyspark.daemon"))
             {

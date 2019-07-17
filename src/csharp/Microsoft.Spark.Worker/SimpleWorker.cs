@@ -16,9 +16,12 @@ namespace Microsoft.Spark.Worker
 
         private readonly Version _version;
 
-        internal SimpleWorker(Version version)
+        private readonly bool _reuseWorker;
+
+        internal SimpleWorker(Version version, bool reuseWorker)
         {
             _version = version;
+            _reuseWorker = reuseWorker;
         }
 
         internal void Run()
@@ -33,7 +36,7 @@ namespace Microsoft.Spark.Worker
                 ISocketWrapper socket = SocketFactory.CreateSocket();
                 socket.Connect(IPAddress.Loopback, port, secret);
 
-                new TaskRunner(0, socket, false, _version).Run();
+                new TaskRunner(0, socket, _reuseWorker, _version).Run();
             }
             catch (Exception e)
             {
